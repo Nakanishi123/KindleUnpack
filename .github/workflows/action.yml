@@ -60,6 +60,7 @@ jobs:
           uses: softprops/action-gh-release@v1
           if: ${{ matrix.os == 'ubuntu-latest'|| matrix.os == 'macos-latest'}}
           with:
+            tag_name: ${{ github.event.commits.id }}
             files: |
               build/kindleunpack-${{ matrix.os }}-gui
               build/kindleunpack-${{ matrix.os }}-cui
@@ -68,6 +69,7 @@ jobs:
           uses: softprops/action-gh-release@v1
           if: ${{ matrix.os == 'windows-latest'}}
           with:
+            tag_name: ${{ github.event.commits.id }}
             files: |
               build/kindleunpack-${{ matrix.os }}-gui.exe
               build/kindleunpack-${{ matrix.os }}-cui.exe
