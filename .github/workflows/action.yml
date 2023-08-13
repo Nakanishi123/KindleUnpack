@@ -29,7 +29,8 @@ jobs:
             script-name: KindleUnpack.py
             onefile: true
             standalone: true
-            output-file: kindleunpack-${{ matrix.os }}
+            macos-create-app-bundle: true
+            output-file: kindleunpack-${{ matrix.os }}-cui
         
         - name: Build gui
           if: ${{ matrix.ui == 'gui' }}
@@ -39,15 +40,19 @@ jobs:
             script-name: KindleUnpack.pyw
             onefile: true
             standalone: true
+            macos-create-app-bundle: true
             enable-plugins: tk-inter
-            output-file: kindleunpack-gui-${{ matrix.os }}
+            output-file: kindleunpack-${{ matrix.os }}-gui
   
         - name: Upload Artifacts
           uses: actions/upload-artifact@v3
           with:
             name: ${{ runner.os }} Build
             path: |
-              build/*
+              build/*.exe
+              build/**/*.app
+              build/kindleunpack-${{ matrix.os }}-gui
+              build/kindleunpack-${{ matrix.os }}-cui
       
         - name: check build
           if: ${{matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'}}
