@@ -1,0 +1,54 @@
+name: Build 
+
+on:
+    push:
+
+jobs:
+    build:
+      strategy:
+        matrix:
+          os: [macos-latest, ubuntu-latest, windows-latest]
+  
+      runs-on: ${{ matrix.os }}
+  
+      steps:
+        - name: Check-out repository
+          uses: actions/checkout@v3
+  
+        - name: Setup Python
+          uses: actions/setup-python@v4
+          with:
+            python-version: '3.11' # Version range or exact version of a Python version to use, using SemVer's version range syntax
+
+  
+        - name: Install Dependencies
+          run: |
+            pip install Nuitka
+  
+        - name: Build cui
+          uses: Nuitka/Nuitka-Action@main
+          with:
+            nuitka-version: main
+            script-name: KindleUnpack.py
+            onefile: true
+            standalone: true
+            output-file: kindleunpack
+        
+        - name: Build gui
+          uses: Nuitka/Nuitka-Action@main
+          with:
+            nuitka-version: main
+            script-name: KindleUnpack.pyw
+            onefile: true
+            standalone: true
+            enable-plugins: tk-inter
+            output-file: kindleunpack-gui
+  
+        - name: Upload Artifacts
+          uses: actions/upload-artifact@v3
+          with:
+            name: ${{ runner.os }} Build
+            path: |
+              build/*.exe
+              build/*.bin
+              build/*.app/**/*
