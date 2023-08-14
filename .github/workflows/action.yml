@@ -10,7 +10,22 @@ permissions:
 
 
 jobs:
+    maketag:
+       runs-on: ubuntu-latest
+       outputs:
+          tag: ${{ steps.tag.outputs.tag }}
+       steps:
+         - id: tag
+           run: |
+            TAG=v$(date -Iminutes | sed 's/[T:\+]/-/g')
+            echo "$TAG"
+            echo "tag=$TAG" >> $GITHUB_OUTPUT
+            git tag -a $TAG -m "Published version $TAG" ${GITHUB_SHA}
+            git push origin $TAG
+
+
     build:
+      needs: maketag
       strategy:
         matrix:
           os: [macos-latest, ubuntu-latest, windows-latest]
@@ -61,23 +76,11 @@ jobs:
           if: ${{matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'}}
           run: |
             ls -l build
-
-        - name: Tag the repository
-          id: tag
-          run: |
-              # See https://docs.github.com/en/get-started/using-git/dealing-with-special-characters-in-branch-and-tag-names
-              TAG=v$(date -Iseconds | sed 's/[T:\+]/-/g')
-              echo "$TAG"
-              echo "tag=$TAG" >> $GITHUB_OUTPUT
-              git config user.name "GitHub Action"
-              git config user.email "bloop@blorp.com"
-              git tag -a $TAG -m "Published version $TAG" ${GITHUB_SHA}
-              git push origin $TAG
          
         - name: Cut a new release
           uses: softprops/action-gh-release@v1
           with:
-            tag_name: ${{ steps.tag.outputs.tag }}
+            tag_name: ${{ needs.maketag.outputs.tag }}
             files: |
               build/*.exe
               build/kindleunpack-${{ matrix.os }}-gui
