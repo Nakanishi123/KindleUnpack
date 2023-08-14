@@ -15,8 +15,11 @@ jobs:
        outputs:
           tag: ${{ steps.tag.outputs.tag }}
        steps:
-         - id: tag
-           run: |
+        - name: Check-out repository
+          uses: actions/checkout@v3
+
+        - id: tag
+          run: |
             TAG=v$(date -Iminutes | sed 's/[T:\+]/-/g')
             echo "$TAG"
             echo "tag=$TAG" >> $GITHUB_OUTPUT
