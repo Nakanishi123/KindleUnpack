@@ -20,7 +20,7 @@ jobs:
 
         - id: tag
           run: |
-            TAG=v$(date -Iminutes | sed 's/[T:\+]/-/g')
+            TAG=v$(TZ=JST-9 date "+%Y-%m-%d-%H-%M")
             echo "$TAG"
             echo "tag=$TAG" >> $GITHUB_OUTPUT
             git config user.name "GitHub Action"
