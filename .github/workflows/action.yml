@@ -3,6 +3,12 @@ name: Build
 on:
     push:
 
+permissions:
+    actions: write
+    checks: write
+    contents: write
+
+
 jobs:
     build:
       strategy:
