@@ -6,11 +6,6 @@ on:
             - master
         types: closed
 
-permissions:
-    actions: write
-    checks: write
-    contents: write
-
 
 jobs:
     build:
